@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: demo-showcase-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./videos:/app/uploads
+      - ./database:/app/database
+    environment:
+      - DATABASE_URL=sqlite:///./database/videos.db
+      - UPLOAD_DIR=/app/uploads
+    restart: unless-stopped
+    networks:
+      - demo-network
+
+  frontend:
+    build: ./frontend
+    container_name: demo-showcase-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    restart: unless-stopped
+    networks:
+      - demo-network
+
+networks:
+  demo-network:
+    driver: bridge
+
+volumes:
+  videos:
+  database:

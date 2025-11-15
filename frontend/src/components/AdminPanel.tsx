@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Upload, Trash2, Edit, Save } from 'lucide-react';
+import { X, Upload, Trash2 } from 'lucide-react';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';

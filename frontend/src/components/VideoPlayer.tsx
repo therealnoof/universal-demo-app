@@ -77,7 +77,7 @@ const VideoPlayer = ({
         </div>
 
         {/* Video Info */}
-        <div className="mt-6 bg-gray-900 rounded-lg p-6">
+        <div className="mt-6 bg-dark-800 rounded-lg p-6 border border-dark-700">
           <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
           {description && (
             <p className="text-gray-300 text-lg">{description}</p>
@@ -90,7 +90,7 @@ const VideoPlayer = ({
             {onPrevious && (
               <button
                 onClick={onPrevious}
-                className="flex items-center gap-2 px-6 py-3 bg-white text-gray-900 rounded-lg hover:bg-gray-100 transition-colors font-medium"
+                className="flex items-center gap-2 px-6 py-3 bg-dark-700 text-white rounded-lg hover:bg-dark-600 transition-colors font-medium border border-dark-600"
               >
                 <SkipBack className="w-5 h-5" />
                 Previous
@@ -99,7 +99,7 @@ const VideoPlayer = ({
             {onNext && (
               <button
                 onClick={onNext}
-                className="flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
+                className="flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-lg shadow-primary-900/50"
               >
                 Next
                 <SkipForward className="w-5 h-5" />

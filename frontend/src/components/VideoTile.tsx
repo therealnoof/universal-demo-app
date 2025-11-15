@@ -20,10 +20,10 @@ const VideoTile = ({ title, description, thumbnail, duration, onClick }: VideoTi
   return (
     <div
       onClick={onClick}
-      className="group relative bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2"
+      className="group relative bg-dark-800 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-primary-900/50 transition-all duration-300 cursor-pointer transform hover:-translate-y-2 border border-dark-700 hover:border-primary-600"
     >
       {/* Thumbnail */}
-      <div className="relative h-48 bg-gradient-to-br from-blue-500 to-purple-600 overflow-hidden">
+      <div className="relative h-48 bg-gradient-to-br from-primary-900 to-dark-900 overflow-hidden">
         {thumbnail ? (
           <img
             src={thumbnail}
@@ -32,14 +32,14 @@ const VideoTile = ({ title, description, thumbnail, duration, onClick }: VideoTi
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <Play className="w-16 h-16 text-white opacity-50" />
+            <Play className="w-16 h-16 text-gray-600 opacity-50" />
           </div>
         )}
 
         {/* Play overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-          <div className="bg-white rounded-full p-4 opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300">
-            <Play className="w-8 h-8 text-primary-600" fill="currentColor" />
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
+          <div className="bg-primary-600 rounded-full p-4 opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 shadow-lg">
+            <Play className="w-8 h-8 text-white" fill="currentColor" />
           </div>
         </div>
 
@@ -54,11 +54,11 @@ const VideoTile = ({ title, description, thumbnail, duration, onClick }: VideoTi
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">
+        <h3 className="text-lg font-semibold text-white mb-1 line-clamp-2">
           {title}
         </h3>
         {description && (
-          <p className="text-sm text-gray-600 line-clamp-2">
+          <p className="text-sm text-gray-400 line-clamp-2">
             {description}
           </p>
         )}

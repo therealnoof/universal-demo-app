@@ -70,23 +70,23 @@ function App() {
     : -1;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
       {/* Header */}
-      <header className="bg-white shadow-md">
+      <header className="bg-dark-900 shadow-xl border-b border-dark-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Demo Showcase
+              <h1 className="text-3xl font-bold text-white">
+                F5 Solutions
               </h1>
-              <p className="text-gray-600 mt-1">
-                Explore our latest innovations
+              <p className="text-gray-400 mt-1">
+                The Application Delivery and Security Platform
               </p>
             </div>
 
             <button
               onClick={() => setShowAdmin(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-dark-800 hover:bg-dark-700 text-gray-300 hover:text-white border border-dark-600 rounded-lg transition-colors"
               title="Admin Panel"
             >
               <Settings className="w-5 h-5" />
@@ -104,12 +104,12 @@ function App() {
           </div>
         ) : videos.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-400 text-lg">
               No videos available. Upload some videos from the admin panel.
             </p>
             <button
               onClick={() => setShowAdmin(true)}
-              className="mt-4 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
+              className="mt-4 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-lg shadow-primary-900/50"
             >
               Open Admin Panel
             </button>
@@ -156,10 +156,10 @@ function App() {
       )}
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-20">
+      <footer className="bg-dark-900 border-t border-dark-700 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <p className="text-center text-gray-600">
-            © 2024 Demo Showcase. All rights reserved.
+          <p className="text-center text-gray-400">
+            © 2024 F5 Solutions. All rights reserved.
           </p>
         </div>
       </footer>

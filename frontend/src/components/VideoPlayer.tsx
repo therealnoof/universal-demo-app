@@ -77,7 +77,7 @@ const VideoPlayer = ({
         </div>
 
         {/* Video Info */}
-        <div className="mt-6 bg-dark-800 rounded-lg p-6 border border-dark-700">
+        <div className="mt-6 bg-dark-900 rounded-lg p-6 border border-dark-800">
           <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
           {description && (
             <p className="text-gray-300 text-lg">{description}</p>

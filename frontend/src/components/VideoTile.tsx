@@ -20,7 +20,7 @@ const VideoTile = ({ title, description, thumbnail, duration, onClick }: VideoTi
   return (
     <div
       onClick={onClick}
-      className="group relative bg-dark-800 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-primary-900/50 transition-all duration-300 cursor-pointer transform hover:-translate-y-2 border border-dark-700 hover:border-primary-600"
+      className="group relative bg-dark-900 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-primary-900/50 transition-all duration-300 cursor-pointer transform hover:-translate-y-2 border border-dark-800 hover:border-primary-600"
     >
       {/* Thumbnail */}
       <div className="relative h-48 bg-gradient-to-br from-primary-900 to-dark-900 overflow-hidden">

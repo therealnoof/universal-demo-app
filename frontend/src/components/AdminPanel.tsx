@@ -111,7 +111,7 @@ const AdminPanel = ({ onClose, onUpdate }: AdminPanelProps) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-dark-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col border border-dark-700">
+      <div className="bg-dark-900 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col border border-dark-800">
         {/* Header */}
         <div className="bg-primary-600 text-white p-6 flex items-center justify-between">
           <h2 className="text-2xl font-bold">Admin Panel</h2>
@@ -125,7 +125,7 @@ const AdminPanel = ({ onClose, onUpdate }: AdminPanelProps) => {
 
         <div className="p-6 overflow-y-auto flex-1">
           {/* Upload Section */}
-          <div className="mb-8 bg-dark-900 rounded-lg p-6 border border-dark-700">
+          <div className="mb-8 bg-black rounded-lg p-6 border border-dark-800">
             <h3 className="text-xl font-semibold mb-4 flex items-center gap-2 text-white">
               <Upload className="w-5 h-5" />
               Upload New Video
@@ -140,7 +140,7 @@ const AdminPanel = ({ onClose, onUpdate }: AdminPanelProps) => {
                   type="text"
                   value={newVideo.title}
                   onChange={(e) => setNewVideo({ ...newVideo, title: e.target.value })}
-                  className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-4 py-2 bg-dark-800 border border-dark-700 text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   required
                 />
               </div>
@@ -152,7 +152,7 @@ const AdminPanel = ({ onClose, onUpdate }: AdminPanelProps) => {
                 <textarea
                   value={newVideo.description}
                   onChange={(e) => setNewVideo({ ...newVideo, description: e.target.value })}
-                  className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-4 py-2 bg-dark-800 border border-dark-700 text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   rows={3}
                 />
               </div>
@@ -165,14 +165,14 @@ const AdminPanel = ({ onClose, onUpdate }: AdminPanelProps) => {
                   type="file"
                   accept="video/*"
                   onChange={(e) => setNewVideo({ ...newVideo, file: e.target.files?.[0] || null })}
-                  className="w-full px-4 py-2 bg-dark-700 border border-dark-600 text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-primary-600 file:text-white hover:file:bg-primary-700"
+                  className="w-full px-4 py-2 bg-dark-800 border border-dark-700 text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-primary-600 file:text-white hover:file:bg-primary-700"
                   required
                 />
               </div>
 
               {uploading && (
                 <div>
-                  <div className="w-full bg-dark-700 rounded-full h-2 overflow-hidden">
+                  <div className="w-full bg-dark-800 rounded-full h-2 overflow-hidden">
                     <div
                       className="bg-primary-600 h-full transition-all duration-300"
                       style={{ width: `${uploadProgress}%` }}
@@ -200,7 +200,7 @@ const AdminPanel = ({ onClose, onUpdate }: AdminPanelProps) => {
               {videos.map((video) => (
                 <div
                   key={video.id}
-                  className="flex items-center justify-between p-4 bg-dark-700 border border-dark-600 rounded-lg hover:shadow-md hover:border-primary-600 transition-all"
+                  className="flex items-center justify-between p-4 bg-dark-800 border border-dark-700 rounded-lg hover:shadow-md hover:border-primary-600 transition-all"
                 >
                   <div className="flex-1">
                     <h4 className="font-semibold text-white">{video.title}</h4>

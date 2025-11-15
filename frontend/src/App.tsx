@@ -70,9 +70,9 @@ function App() {
     : -1;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
+    <div className="min-h-screen bg-gradient-to-br from-black via-dark-900 to-dark-800">
       {/* Header */}
-      <header className="bg-dark-900 shadow-xl border-b border-dark-700">
+      <header className="bg-black shadow-xl border-b border-dark-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -163,7 +163,7 @@ function App() {
       )}
 
       {/* Footer */}
-      <footer className="bg-dark-900 border-t border-dark-700 mt-20">
+      <footer className="bg-black border-t border-dark-800 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col items-center gap-3">
             <img

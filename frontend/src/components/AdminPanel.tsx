@@ -45,6 +45,8 @@ const AdminPanel = ({ onClose, onUpdate, categories }: AdminPanelProps) => {
   const [editCategoryName, setEditCategoryName] = useState('');
   const [managingVideoCategories, setManagingVideoCategories] = useState<number | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [editingVideo, setEditingVideo] = useState<number | null>(null);
+  const [editVideoData, setEditVideoData] = useState({ title: '', description: '' });
 
   const loadVideos = async () => {
     try {
@@ -121,6 +123,19 @@ const AdminPanel = ({ onClose, onUpdate, categories }: AdminPanelProps) => {
     } catch (error) {
       console.error('Error updating video:', error);
       alert('Failed to update video');
+    }
+  };
+
+  const handleEditVideo = async (id: number) => {
+    try {
+      await axios.put(`${API_URL}/api/videos/${id}`, editVideoData);
+      setEditingVideo(null);
+      setEditVideoData({ title: '', description: '' });
+      await loadVideos();
+      onUpdate();
+    } catch (error) {
+      console.error('Error editing video:', error);
+      alert('Failed to edit video');
     }
   };
 
@@ -317,54 +332,109 @@ const AdminPanel = ({ onClose, onUpdate, categories }: AdminPanelProps) => {
                   className="flex items-center justify-between p-4 bg-dark-800 border border-dark-700 rounded-lg hover:shadow-md hover:border-primary-600 transition-all"
                 >
                   <div className="flex-1">
-                    <h4 className="font-semibold text-white">{video.title}</h4>
-                    {video.description && (
-                      <p className="text-sm text-gray-400">{video.description}</p>
-                    )}
-                    <p className="text-xs text-gray-500 mt-1">
-                      Duration: {video.duration ? `${Math.floor(video.duration / 60)}:${(video.duration % 60).toString().padStart(2, '0')}` : 'N/A'}
-                    </p>
-                    {video.categories && video.categories.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {video.categories.map((cat) => (
-                          <span
-                            key={cat.id}
-                            className="px-2 py-1 bg-primary-600 text-white text-xs rounded"
-                          >
-                            {cat.name}
-                          </span>
-                        ))}
+                    {editingVideo === video.id ? (
+                      <div className="space-y-2">
+                        <input
+                          type="text"
+                          value={editVideoData.title}
+                          onChange={(e) => setEditVideoData({ ...editVideoData, title: e.target.value })}
+                          className="w-full px-3 py-2 bg-dark-900 border border-dark-600 text-white rounded focus:ring-2 focus:ring-primary-500"
+                          placeholder="Video title"
+                          autoFocus
+                        />
+                        <textarea
+                          value={editVideoData.description}
+                          onChange={(e) => setEditVideoData({ ...editVideoData, description: e.target.value })}
+                          className="w-full px-3 py-2 bg-dark-900 border border-dark-600 text-white rounded focus:ring-2 focus:ring-primary-500"
+                          placeholder="Video description"
+                          rows={2}
+                        />
                       </div>
+                    ) : (
+                      <>
+                        <h4 className="font-semibold text-white">{video.title}</h4>
+                        {video.description && (
+                          <p className="text-sm text-gray-400">{video.description}</p>
+                        )}
+                        <p className="text-xs text-gray-500 mt-1">
+                          Duration: {video.duration ? `${Math.floor(video.duration / 60)}:${(video.duration % 60).toString().padStart(2, '0')}` : 'N/A'}
+                        </p>
+                        {video.categories && video.categories.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {video.categories.map((cat) => (
+                              <span
+                                key={cat.id}
+                                className="px-2 py-1 bg-primary-600 text-white text-xs rounded"
+                              >
+                                {cat.name}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleOpenVideoCategories(video.id, video.categories || [])}
-                      className="p-2 text-blue-500 hover:bg-blue-900/30 rounded-lg transition-colors"
-                      title="Manage Categories"
-                    >
-                      <Tag className="w-5 h-5" />
-                    </button>
+                    {editingVideo === video.id ? (
+                      <>
+                        <button
+                          onClick={() => handleEditVideo(video.id)}
+                          className="px-3 py-1 bg-green-600 text-white rounded text-sm font-medium hover:bg-green-700"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingVideo(null);
+                            setEditVideoData({ title: '', description: '' });
+                          }}
+                          className="px-3 py-1 bg-dark-600 text-gray-400 rounded text-sm font-medium hover:bg-dark-500"
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => {
+                            setEditingVideo(video.id);
+                            setEditVideoData({ title: video.title, description: video.description || '' });
+                          }}
+                          className="p-2 text-blue-500 hover:bg-blue-900/30 rounded-lg transition-colors"
+                          title="Edit"
+                        >
+                          <Edit2 className="w-5 h-5" />
+                        </button>
 
-                    <button
-                      onClick={() => handleToggleActive(video.id, video.is_active)}
-                      className={`px-3 py-1 rounded text-sm font-medium ${
-                        video.is_active
-                          ? 'bg-green-600 text-white'
-                          : 'bg-dark-600 text-gray-400'
-                      }`}
-                    >
-                      {video.is_active ? 'Active' : 'Hidden'}
-                    </button>
+                        <button
+                          onClick={() => handleOpenVideoCategories(video.id, video.categories || [])}
+                          className="p-2 text-purple-500 hover:bg-purple-900/30 rounded-lg transition-colors"
+                          title="Manage Categories"
+                        >
+                          <Tag className="w-5 h-5" />
+                        </button>
 
-                    <button
-                      onClick={() => handleDelete(video.id)}
-                      className="p-2 text-red-500 hover:bg-red-900/30 rounded-lg transition-colors"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
+                        <button
+                          onClick={() => handleToggleActive(video.id, video.is_active)}
+                          className={`px-3 py-1 rounded text-sm font-medium ${
+                            video.is_active
+                              ? 'bg-green-600 text-white'
+                              : 'bg-dark-600 text-gray-400'
+                          }`}
+                        >
+                          {video.is_active ? 'Active' : 'Hidden'}
+                        </button>
+
+                        <button
+                          onClick={() => handleDelete(video.id)}
+                          className="p-2 text-red-500 hover:bg-red-900/30 rounded-lg transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               ))}

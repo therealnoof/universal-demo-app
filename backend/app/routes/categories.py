@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from typing import List, Optional
 from pydantic import BaseModel
 
@@ -20,7 +21,11 @@ class CategoryUpdate(BaseModel):
 @router.get("/")
 async def get_categories(db: AsyncSession = Depends(get_db)):
     """Get all categories"""
-    result = await db.execute(select(Category).order_by(Category.order_position, Category.name))
+    result = await db.execute(
+        select(Category)
+        .options(selectinload(Category.videos))
+        .order_by(Category.order_position, Category.name)
+    )
     categories = result.scalars().all()
     return [cat.to_dict() for cat in categories]
 
@@ -39,13 +44,17 @@ async def create_category(category: CategoryCreate, db: AsyncSession = Depends(g
     )
     db.add(new_category)
     await db.commit()
-    await db.refresh(new_category)
+    await db.refresh(new_category, attribute_names=["videos"])
     return new_category.to_dict()
 
 @router.put("/{category_id}")
 async def update_category(category_id: int, category: CategoryUpdate, db: AsyncSession = Depends(get_db)):
     """Update a category"""
-    result = await db.execute(select(Category).where(Category.id == category_id))
+    result = await db.execute(
+        select(Category)
+        .options(selectinload(Category.videos))
+        .where(Category.id == category_id)
+    )
     db_category = result.scalar_one_or_none()
 
     if not db_category:

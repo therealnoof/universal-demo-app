@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, B
 from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
+from sqlalchemy.orm import selectinload
 from typing import List, Optional
 import os
 import shutil
@@ -45,7 +46,7 @@ async def get_videos(
     db: AsyncSession = Depends(get_db)
 ):
     """Get all videos, optionally filtered by category"""
-    query = select(Video)
+    query = select(Video).options(selectinload(Video.categories))
     if active_only:
         query = query.where(Video.is_active == True)
 
@@ -65,7 +66,11 @@ async def get_video(
     db: AsyncSession = Depends(get_db)
 ):
     """Get a single video by ID"""
-    result = await db.execute(select(Video).where(Video.id == video_id))
+    result = await db.execute(
+        select(Video)
+        .options(selectinload(Video.categories))
+        .where(Video.id == video_id)
+    )
     video = result.scalar_one_or_none()
     if not video:
         raise HTTPException(status_code=404, detail="Video not found")
@@ -124,7 +129,7 @@ async def upload_video(
 
     db.add(video)
     await db.commit()
-    await db.refresh(video)
+    await db.refresh(video, attribute_names=["categories"])
 
     return video.to_dict()
 
@@ -138,7 +143,11 @@ async def update_video(
     db: AsyncSession = Depends(get_db)
 ):
     """Update video metadata"""
-    result = await db.execute(select(Video).where(Video.id == video_id))
+    result = await db.execute(
+        select(Video)
+        .options(selectinload(Video.categories))
+        .where(Video.id == video_id)
+    )
     video = result.scalar_one_or_none()
 
     if not video:
@@ -164,7 +173,11 @@ async def delete_video(
     db: AsyncSession = Depends(get_db)
 ):
     """Delete a video"""
-    result = await db.execute(select(Video).where(Video.id == video_id))
+    result = await db.execute(
+        select(Video)
+        .options(selectinload(Video.categories))
+        .where(Video.id == video_id)
+    )
     video = result.scalar_one_or_none()
 
     if not video:
@@ -215,7 +228,11 @@ async def update_video_categories(
     db: AsyncSession = Depends(get_db)
 ):
     """Update video categories"""
-    result = await db.execute(select(Video).where(Video.id == video_id))
+    result = await db.execute(
+        select(Video)
+        .options(selectinload(Video.categories))
+        .where(Video.id == video_id)
+    )
     video = result.scalar_one_or_none()
 
     if not video:

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Body
 from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
@@ -6,8 +6,9 @@ from typing import List, Optional
 import os
 import shutil
 from pathlib import Path
+from pydantic import BaseModel
 from ..database import get_db
-from ..models import Video
+from ..models import Video, Category
 from moviepy.editor import VideoFileClip
 from PIL import Image
 import uuid
@@ -40,12 +41,18 @@ def generate_thumbnail(video_path: str, thumbnail_path: str) -> bool:
 @router.get("/")
 async def get_videos(
     active_only: bool = True,
+    category_id: Optional[int] = None,
     db: AsyncSession = Depends(get_db)
 ):
-    """Get all videos"""
+    """Get all videos, optionally filtered by category"""
     query = select(Video)
     if active_only:
         query = query.where(Video.is_active == True)
+
+    # Filter by category if specified
+    if category_id is not None:
+        query = query.join(Video.categories).where(Category.id == category_id)
+
     query = query.order_by(Video.order_position, Video.created_at.desc())
 
     result = await db.execute(query)
@@ -197,3 +204,30 @@ async def get_thumbnail(filename: str):
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Thumbnail not found")
     return FileResponse(file_path)
+
+class VideoCategoriesUpdate(BaseModel):
+    category_ids: List[int]
+
+@router.put("/{video_id}/categories")
+async def update_video_categories(
+    video_id: int,
+    data: VideoCategoriesUpdate,
+    db: AsyncSession = Depends(get_db)
+):
+    """Update video categories"""
+    result = await db.execute(select(Video).where(Video.id == video_id))
+    video = result.scalar_one_or_none()
+
+    if not video:
+        raise HTTPException(status_code=404, detail="Video not found")
+
+    # Get all categories
+    result = await db.execute(select(Category).where(Category.id.in_(data.category_ids)))
+    categories = result.scalars().all()
+
+    # Update video categories
+    video.categories = list(categories)
+    await db.commit()
+    await db.refresh(video)
+
+    return video.to_dict()

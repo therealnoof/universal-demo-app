@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from .database import init_db
-from .routes import videos
+from .routes import videos, categories
 import os
 
 @asynccontextmanager
@@ -32,6 +32,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(videos.router)
+app.include_router(categories.router)
 
 # Mount uploads directory for static file serving
 UPLOAD_DIR = os.getenv("UPLOAD_DIR", "./uploads")
@@ -45,6 +46,7 @@ async def root():
         "version": "1.0.0",
         "endpoints": {
             "videos": "/api/videos",
+            "categories": "/api/categories",
             "docs": "/docs",
             "health": "/health"
         }

@@ -1,11 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Settings } from 'lucide-react';
+import { Settings, Filter } from 'lucide-react';
 import axios from 'axios';
 import VideoTile from './components/VideoTile';
 import VideoPlayer from './components/VideoPlayer';
 import AdminPanel from './components/AdminPanel';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+interface Category {
+  id: number;
+  name: string;
+  order_position: number;
+  video_count?: number;
+}
 
 interface Video {
   id: number;
@@ -17,18 +24,31 @@ interface Video {
   file_size?: number;
   order_position: number;
   is_active: boolean;
+  categories?: Category[];
 }
 
 function App() {
   const [videos, setVideos] = useState<Video[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [showAdmin, setShowAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const loadVideos = async () => {
+  const loadCategories = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/categories`);
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    }
+  };
+
+  const loadVideos = async (categoryId: number | null = null) => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/api/videos`);
+      const params = categoryId ? { category_id: categoryId } : {};
+      const response = await axios.get(`${API_URL}/api/videos`, { params });
       setVideos(response.data);
     } catch (error) {
       console.error('Error loading videos:', error);
@@ -38,8 +58,13 @@ function App() {
   };
 
   useEffect(() => {
+    loadCategories();
     loadVideos();
   }, []);
+
+  useEffect(() => {
+    loadVideos(selectedCategory);
+  }, [selectedCategory]);
 
   const handleVideoClick = (video: Video) => {
     setSelectedVideo(video);
@@ -91,14 +116,35 @@ function App() {
               </div>
             </div>
 
-            <button
-              onClick={() => setShowAdmin(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-dark-800 hover:bg-dark-700 text-gray-300 hover:text-white border border-dark-600 rounded-lg transition-colors"
-              title="Admin Panel"
-            >
-              <Settings className="w-5 h-5" />
-              <span className="hidden sm:inline">Admin</span>
-            </button>
+            <div className="flex items-center gap-3">
+              {/* Category Filter */}
+              {categories.length > 0 && (
+                <div className="relative">
+                  <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                  <select
+                    value={selectedCategory || ''}
+                    onChange={(e) => setSelectedCategory(e.target.value ? parseInt(e.target.value) : null)}
+                    className="pl-10 pr-8 py-2 bg-dark-800 border border-dark-600 text-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-primary-600 cursor-pointer appearance-none"
+                  >
+                    <option value="">All Categories</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name} ({category.video_count || 0})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <button
+                onClick={() => setShowAdmin(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-dark-800 hover:bg-dark-700 text-gray-300 hover:text-white border border-dark-600 rounded-lg transition-colors"
+                title="Admin Panel"
+              >
+                <Settings className="w-5 h-5" />
+                <span className="hidden sm:inline">Admin</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -158,7 +204,11 @@ function App() {
       {showAdmin && (
         <AdminPanel
           onClose={() => setShowAdmin(false)}
-          onUpdate={loadVideos}
+          onUpdate={() => {
+            loadVideos();
+            loadCategories();
+          }}
+          categories={categories}
         />
       )}
 

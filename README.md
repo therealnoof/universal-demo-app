@@ -1,6 +1,6 @@
-# Demo Showcase Application
+# Universal Demo Application
 
-A modern, containerized video showcase application designed for trade shows and client demonstrations. Features a sleek tile-based interface for displaying demo videos with an intuitive admin panel for content management.
+A modern, containerized video demo application designed for trade shows and client demonstrations. Features a sleek tile-based interface for displaying demo videos with an intuitive admin panel for content management.
 
 ![Demo Showcase](./images/screenshot.png)
 

@@ -52,7 +52,68 @@ A modern, containerized video demo application designed for trade shows and clie
 - Docker Desktop (macOS/Windows) or Docker Engine (Linux)
 - OR: Node.js 20+ and Python 3.11+ for local development
 
-### Option 1: Docker (Recommended)
+### Option 1: Docker Hub (Quickest - Recommended)
+
+Pre-built ARM64 images are available on Docker Hub. Just pull and run:
+
+1. **Create docker-compose.yml:**
+   ```yaml
+   version: '3.8'
+
+   services:
+     backend:
+       image: hd1912/universal-demo-app-backend:latest
+       platform: linux/arm64
+       container_name: demo-showcase-backend
+       ports:
+         - "8000:8000"
+       volumes:
+         - ./videos:/app/uploads
+         - ./database:/app/database
+       environment:
+         - DATABASE_URL=sqlite:///./database/videos.db
+         - UPLOAD_DIR=/app/uploads
+       restart: unless-stopped
+       networks:
+         - demo-network
+
+     frontend:
+       image: hd1912/universal-demo-app-frontend:latest
+       platform: linux/arm64
+       container_name: demo-showcase-frontend
+       ports:
+         - "80:80"
+       depends_on:
+         - backend
+       environment:
+         - VITE_API_URL=http://localhost:8000
+       restart: unless-stopped
+       networks:
+         - demo-network
+
+   networks:
+     demo-network:
+       driver: bridge
+   ```
+
+2. **Start the application:**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Access the application:**
+   - Frontend: http://localhost
+   - Backend API: http://localhost:8000
+   - API Docs: http://localhost:8000/docs
+
+4. **Stop the application:**
+   ```bash
+   docker-compose down
+   ```
+
+**Note:** These images are built for ARM64 architecture (Apple Silicon, AWS Graviton, etc.). For AMD64/x86_64, build from source using Option 2.
+
+### Option 2: Build from Source (Docker)
 
 1. **Clone the repository:**
    ```bash
@@ -75,7 +136,7 @@ A modern, containerized video demo application designed for trade shows and clie
    docker-compose down
    ```
 
-### Option 2: Local Development
+### Option 3: Local Development
 
 **Backend:**
 ```bash

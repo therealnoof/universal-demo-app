@@ -2,9 +2,11 @@ version: '3.8'
 
 services:
   backend:
-    build: ./backend
-    image: hd1912/universal-demo-backend:arm64
-    platform: linux/arm64
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.amd64
+    image: hd1912/universal-demo-backend:amd64
+    platform: linux/amd64
     container_name: demo-showcase-backend
     ports:
       - "8000:8000"
@@ -19,9 +21,11 @@ services:
       - demo-network
 
   frontend:
-    build: ./frontend
-    image: hd1912/universal-demo-frontend:arm64
-    platform: linux/arm64
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.amd64
+    image: hd1912/universal-demo-frontend:amd64
+    platform: linux/amd64
     container_name: demo-showcase-frontend
     ports:
       - "80:80"
